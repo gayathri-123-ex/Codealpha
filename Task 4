@@ -1,0 +1,153 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+class Room {
+    String category;
+    int price;
+    String status;
+    String guestName;
+    String creditCardNumber;
+
+    public Room(String category, int price, String status) {
+        this.category = category;
+        this.price = price;
+        this.status = status;
+        this.guestName = "";
+        this.creditCardNumber = "";
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getGuestName() {
+        return guestName;
+    }
+
+    public void setGuestName(String guestName) {
+        this.guestName = guestName;
+    }
+
+    public String getCreditCardNumber() {
+        return creditCardNumber;
+    }
+
+    public void setCreditCardNumber(String creditCardNumber) {
+        this.creditCardNumber = creditCardNumber;
+    }
+}
+
+public class HotelReservation {
+    private Map<String, Room> rooms;
+    private Scanner scanner;
+
+    public HotelReservation() {
+        rooms = new HashMap<>();
+        scanner = new Scanner(System.in);
+        initializeRooms();
+    }
+
+    private void initializeRooms() {
+        rooms.put("101", new Room("Single", 100, "Available"));
+        rooms.put("102", new Room("Double", 200, "Available"));
+        rooms.put("103", new Room("Suite", 500, "Available"));
+        rooms.put("104", new Room("Single", 100, "Available"));
+        rooms.put("105", new Room("Double", 200, "Available"));
+    }
+
+    public void displayRooms() {
+        System.out.println("Room Number\tCategory\tPrice\tStatus");
+        for (Map.Entry<String, Room> entry : rooms.entrySet()) {
+            System.out.println(entry.getKey() + "\t\t" + entry.getValue().getCategory() + "\t\t" + entry.getValue().getPrice() + "\t\t" + entry.getValue().getStatus());
+        }
+    }
+
+    public void reserveRoom() {
+        System.out.print("Enter room number: ");
+        String roomNumber = scanner.nextLine();
+        if (rooms.containsKey(roomNumber) && rooms.get(roomNumber).getStatus().equals("Available")) {
+            System.out.println("Enter your name: ");
+            String guestName = scanner.nextLine();
+            System.out.println("Enter your credit card number: ");
+            String creditCardNumber = scanner.nextLine();
+            rooms.get(roomNumber).setStatus("Reserved");
+            rooms.get(roomNumber).setGuestName(guestName);
+            rooms.get(roomNumber).setCreditCardNumber(creditCardNumber);
+            System.out.println("Room reserved successfully!");
+        } else {
+            System.out.println("Room not available or does not exist.");
+        }
+    }
+
+    public void cancelReservation() {
+        System.out.print("Enter room number: ");
+        String roomNumber = scanner.nextLine();
+        if (rooms.containsKey(roomNumber) && rooms.get(roomNumber).getStatus().equals("Reserved")) {
+            rooms.get(roomNumber).setStatus("Available");
+            rooms.get(roomNumber).setGuestName("");
+            rooms.get(roomNumber).setCreditCardNumber("");
+            System.out.println("Reservation cancelled successfully!");
+        } else {
+            System.out.println("Room not reserved or does not exist.");
+        }
+    }
+
+    public void checkout() {
+        System.out.print("Enter room number: ");
+        String roomNumber = scanner.nextLine();
+        if (rooms.containsKey(roomNumber) && rooms.get(roomNumber).getStatus().equals("Reserved")) {
+            System.out.println("Checkout successful. Please pay " + rooms.get(roomNumber).getPrice() + " at the reception.");
+            rooms.get(roomNumber).setStatus("Available");
+            rooms.get(roomNumber).setGuestName("");
+            rooms.get(roomNumber).setCreditCardNumber("");
+        } else {
+            System.out.println("Room not reserved or does not exist.");
+        }
+    }
+
+    public static void main(String[] args) {
+        HotelReservation hotel = new HotelReservation();
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("1. Display rooms");
+            System.out.println("2. Reserve room");
+            System.out.println("3. Cancel reservation");
+            System.out.println("4. Checkout");
+            System.out.println("5. Exit");
+            System.out.print("Choose an option: ");
+            int option = Integer.parseInt(scanner.nextLine());
+            switch (option) {
+                case 1:
+                    hotel.displayRooms();
+                    break;
+                case 2:
+                    hotel.reserveRoom();
+                    break;
+                case 3:
+                    hotel.cancelReservation();
+                    break;
+                case 4:
+                    hotel.checkout();
+                    break;
+                case 5:
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("");
+            }
+        }
+    }
+}
